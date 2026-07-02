@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+:root {
+  --kakao-yellow: #FEE500;
+  --kakao-brown: #3C1E1E;
+}
