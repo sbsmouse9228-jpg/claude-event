@@ -29,7 +29,7 @@ export default function EventEditForm({ event }: { event: Event }) {
       .update({
         title: (formData.get('title') as string).trim(),
         location: (formData.get('location') as string).trim(),
-        event_date: `${formData.get('event_date')}T${formData.get('event_time')}:00`,
+        event_date: new Date(`${formData.get('event_date')}T${formData.get('event_time')}:00`).toISOString(),
         description: (formData.get('description') as string).trim() || null,
         max_participants: formData.get('max_participants')
           ? parseInt(formData.get('max_participants') as string)

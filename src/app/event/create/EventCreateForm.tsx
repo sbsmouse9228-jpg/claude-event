@@ -36,7 +36,7 @@ export default function EventCreateForm() {
         host_id: user.id,
         title: title.trim(),
         location: location.trim(),
-        event_date: `${eventDate}T${eventTime}:00`,
+        event_date: new Date(`${eventDate}T${eventTime}:00`).toISOString(),
         description: description.trim() || null,
         max_participants: maxParticipants ? parseInt(maxParticipants) : null,
         entry_fee: entryFee ? parseInt(entryFee) : null,

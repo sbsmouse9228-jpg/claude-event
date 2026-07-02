@@ -34,7 +34,9 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p))
 
-  if (isProtected && !user) {
+  const isAuthenticated = user && !user.is_anonymous
+
+  if (isProtected && !isAuthenticated) {
     const redirectUrl = request.nextUrl.clone()
     redirectUrl.pathname = '/'
     redirectUrl.searchParams.set('redirect', pathname)

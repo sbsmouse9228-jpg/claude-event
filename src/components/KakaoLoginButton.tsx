@@ -13,6 +13,7 @@ export default function KakaoLoginButton() {
     await supabase.auth.signInWithOAuth({
       provider: 'kakao',
       options: {
+        scopes: 'profile_nickname profile_image',
         redirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`,
       },
     })

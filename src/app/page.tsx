@@ -5,9 +5,10 @@ import KakaoLoginButton from '@/components/KakaoLoginButton'
 
 export default async function LandingPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error } = await supabase.auth.getUser()
 
-  if (user) {
+  // 익명 사용자는 랜딩 페이지에 머물게 함
+  if (user && !user.is_anonymous) {
     redirect('/dashboard')
   }
 
