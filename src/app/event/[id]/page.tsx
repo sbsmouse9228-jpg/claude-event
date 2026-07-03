@@ -17,7 +17,7 @@ export default async function EventPage({ params, searchParams }: Props) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const [{ data: event }, { data: participants }, { data: notices }] = await Promise.all([
+  const [{ data: event }, { data: participants }, { data: notices }, { data: carpoolCars }] = await Promise.all([
     supabase
       .from('events')
       .select('*, users!events_host_id_fkey(nickname, profile_image)')
@@ -32,6 +32,10 @@ export default async function EventPage({ params, searchParams }: Props) {
       .select('*')
       .eq('event_id', id)
       .order('created_at', { ascending: false }),
+    supabase
+      .from('carpool_cars')
+      .select('id, driver_id, available_seats, carpool_requests(status)')
+      .eq('event_id', id),
   ])
 
   if (!event) notFound()
@@ -50,6 +54,13 @@ export default async function EventPage({ params, searchParams }: Props) {
 
   const myParticipant = participants?.find((p) => p.user_id === user?.id)
   const attendingCount = participants?.filter((p) => p.attendance === 'attending').length ?? 0
+
+  type RawCarpoolCar = { id: string; driver_id: string; available_seats: number; carpool_requests: { status: string }[] }
+  const carpoolAssigned = (carpoolCars as RawCarpoolCar[] ?? []).reduce((acc, car) => {
+    const accepted = car.carpool_requests.filter(r => r.status === 'accepted').length
+    return acc + accepted + 1 // +1 for driver
+  }, 0)
+  const hasCarpoolCars = (carpoolCars?.length ?? 0) > 0
 
   const eventDate = new Date(event.event_date)
   const dateStr = eventDate.toLocaleDateString('ko-KR', {
@@ -136,6 +147,24 @@ export default async function EventPage({ params, searchParams }: Props) {
             관리자 패널 →
           </Link>
         )}
+
+        {/* 카풀 현황 위젯 */}
+        <Link href={`/event/${id}/carpool`}>
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 hover:border-indigo-200 hover:shadow-sm transition-all">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🚗</span>
+                <span className="text-sm font-semibold text-gray-800">카풀</span>
+              </div>
+              <span className="text-xs text-indigo-500 font-medium">자세히 →</span>
+            </div>
+            <p className="text-xs text-gray-500 mt-1.5">
+              {hasCarpoolCars
+                ? `${carpoolCars?.length}대 등록 · ${carpoolAssigned}명 배정 완료`
+                : '아직 등록된 차량이 없어요'}
+            </p>
+          </div>
+        </Link>
 
         {/* 공지 목록 */}
         {notices && notices.length > 0 && (
