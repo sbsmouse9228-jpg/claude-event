@@ -1,0 +1,42 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$j=[Console]::In.ReadToEnd()|ConvertFrom-Json;if($j.tool_input.file_path -match '\\.(ts|tsx)$'){npx tsc --noEmit 2>&1}",
+            "shell": "powershell",
+            "timeout": 60,
+            "statusMessage": "타입 체크 중..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$j=[Console]::In.ReadToEnd()|ConvertFrom-Json;$ts=(Get-Date -Format 'yyyy-MM-dd HH:mm:ss');\"$ts | $($j.tool_input.command)\"|Add-Content \"$env:USERPROFILE\\.claude\\bash-log.txt\"",
+            "shell": "powershell",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "Write-Output '{\"systemMessage\":\"Claude 작업이 완료되었습니다.\"}'",
+            "shell": "powershell"
+          }
+        ]
+      }
+    ]
+  }
+}
