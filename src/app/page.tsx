@@ -13,7 +13,7 @@ export default async function LandingPage() {
   }
 
   return (
-    <main className="flex flex-col min-h-screen items-center justify-center px-4">
+    <main className="flex flex-col min-h-screen items-center px-4 py-14">
       <div className="w-full max-w-sm flex flex-col items-center gap-8 text-center">
         {/* 로고 */}
         <div className="flex flex-col items-center gap-2">
