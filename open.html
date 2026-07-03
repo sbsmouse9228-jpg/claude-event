@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>MOA 개발 링크</title>
+  <style>
+    body { font-family: sans-serif; max-width: 480px; margin: 60px auto; padding: 0 20px; }
+    h1 { font-size: 22px; margin-bottom: 4px; }
+    p { color: #888; font-size: 13px; margin-bottom: 32px; }
+    a {
+      display: block; padding: 14px 18px; margin-bottom: 10px;
+      border: 1px solid #e5e7eb; border-radius: 12px;
+      text-decoration: none; color: #111;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    a:hover { border-color: #6366f1; background: #f5f3ff; }
+    .label { font-size: 15px; font-weight: 600; }
+    .path { font-size: 12px; color: #6366f1; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <h1>MOA 개발 링크</h1>
+  <p>서버가 실행 중일 때 (npm run dev) 클릭하세요</p>
+
+  <a href="http://localhost:3000/">
+    <div class="label">랜딩 페이지</div>
+    <div class="path">/ &nbsp;— 카카오 로그인</div>
+  </a>
+  <a href="http://localhost:3000/dashboard">
+    <div class="label">대시보드</div>
+    <div class="path">/dashboard &nbsp;— 내 모임 목록</div>
+  </a>
+  <a href="http://localhost:3000/event/create">
+    <div class="label">이벤트 생성</div>
+    <div class="path">/event/create</div>
+  </a>
+  <a href="http://localhost:3000/event/73e0ecc4-5d9e-436b-8273-840f17d95d4c">
+    <div class="label">이벤트 상세 — 7월 GFX모임</div>
+    <div class="path">/event/[id]</div>
+  </a>
+  <a href="http://localhost:3000/event/73e0ecc4-5d9e-436b-8273-840f17d95d4c/manage">
+    <div class="label">관리자 패널</div>
+    <div class="path">/event/[id]/manage</div>
+  </a>
+  <a href="http://localhost:3000/event/73e0ecc4-5d9e-436b-8273-840f17d95d4c/carpool">
+    <div class="label">카풀</div>
+    <div class="path">/event/[id]/carpool</div>
+  </a>
+  <a href="http://localhost:3000/event/73e0ecc4-5d9e-436b-8273-840f17d95d4c/settle">
+    <div class="label">정산</div>
+    <div class="path">/event/[id]/settle</div>
+  </a>
+</body>
+</html>

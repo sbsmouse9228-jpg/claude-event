@@ -17,7 +17,7 @@ export default async function EventPage({ params, searchParams }: Props) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const [{ data: event }, { data: participants }, { data: notices }, { data: carpoolCars }] = await Promise.all([
+  const [{ data: event }, { data: participants }, { data: notices }, { data: carpoolCars }, { data: settlements }] = await Promise.all([
     supabase
       .from('events')
       .select('*, users!events_host_id_fkey(nickname, profile_image)')
@@ -35,6 +35,10 @@ export default async function EventPage({ params, searchParams }: Props) {
     supabase
       .from('carpool_cars')
       .select('id, driver_id, available_seats, carpool_requests(status)')
+      .eq('event_id', id),
+    supabase
+      .from('settlements')
+      .select('amount, settlement_payments(paid_at)')
       .eq('event_id', id),
   ])
 
@@ -61,6 +65,13 @@ export default async function EventPage({ params, searchParams }: Props) {
     return acc + accepted + 1 // +1 for driver
   }, 0)
   const hasCarpoolCars = (carpoolCars?.length ?? 0) > 0
+
+  type RawSettlement = { amount: number; settlement_payments: { paid_at: string | null }[] }
+  const settlementList = (settlements as unknown as RawSettlement[] ?? [])
+  const totalSettlementAmount = settlementList.reduce((sum, s) => sum + s.amount, 0)
+  const allSettlementPayments = settlementList.flatMap(s => s.settlement_payments)
+  const paidPaymentsCount = allSettlementPayments.filter(p => p.paid_at).length
+  const hasSettlements = settlementList.length > 0
 
   const eventDate = new Date(event.event_date)
   const dateStr = eventDate.toLocaleDateString('ko-KR', {
@@ -162,6 +173,24 @@ export default async function EventPage({ params, searchParams }: Props) {
               {hasCarpoolCars
                 ? `${carpoolCars?.length}대 등록 · ${carpoolAssigned}명 배정 완료`
                 : '아직 등록된 차량이 없어요'}
+            </p>
+          </div>
+        </Link>
+
+        {/* 정산 현황 위젯 */}
+        <Link href={`/event/${id}/settle`}>
+          <div className="bg-white rounded-2xl border border-gray-200 p-4 hover:border-indigo-200 hover:shadow-sm transition-all">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-base">💰</span>
+                <span className="text-sm font-semibold text-gray-800">정산</span>
+              </div>
+              <span className="text-xs text-indigo-500 font-medium">자세히 →</span>
+            </div>
+            <p className="text-xs text-gray-500 mt-1.5">
+              {hasSettlements
+                ? `총 ${totalSettlementAmount.toLocaleString()}원 · ${paidPaymentsCount}/${allSettlementPayments.length}명 납부 완료`
+                : '아직 정산 항목이 없어요'}
             </p>
           </div>
         </Link>

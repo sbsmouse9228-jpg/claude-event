@@ -54,3 +54,21 @@ export interface CarpoolCar {
   driver?: User
   carpool_requests?: CarpoolRequest[]
 }
+
+export interface Settlement {
+  id: string
+  event_id: string
+  item_name: string
+  amount: number
+  created_at: string
+  settlement_payments?: SettlementPayment[]
+}
+
+export interface SettlementPayment {
+  id: string
+  settlement_id: string
+  user_id: string
+  amount_due: number
+  paid_at: string | null
+  user?: User
+}
