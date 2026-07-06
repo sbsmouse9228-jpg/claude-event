@@ -2,27 +2,33 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 
-export default function NoticeForm({ eventId, userId }: { eventId: string; userId: string }) {
+export default function NoticeForm({ eventId }: { eventId: string; userId: string }) {
   const router = useRouter()
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
+  const [result, setResult] = useState<{ pushSent?: number; error?: string } | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!content.trim()) return
     setLoading(true)
+    setResult(null)
 
-    const supabase = createClient()
-    await supabase.from('notices').insert({
-      event_id: eventId,
-      author_id: userId,
-      content: content.trim(),
+    const res = await fetch('/api/send-notice', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventId, content: content.trim() }),
     })
+    const data = await res.json()
 
-    setContent('')
     setLoading(false)
+    if (data.error) {
+      setResult({ error: data.error })
+      return
+    }
+    setContent('')
+    setResult({ pushSent: data.pushSent })
     router.refresh()
   }
 
@@ -35,6 +41,14 @@ export default function NoticeForm({ eventId, userId }: { eventId: string; userI
         placeholder="참여자에게 전달할 공지를 입력하세요"
         className="w-full px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
       />
+      {result?.error && (
+        <p className="text-sm text-red-500">{result.error}</p>
+      )}
+      {result?.pushSent !== undefined && (
+        <p className="text-sm text-green-600">
+          공지가 발송됐어요.{result.pushSent > 0 ? ` (푸시 알림 ${result.pushSent}명)` : ' (알림 수신자 없음)'}
+        </p>
+      )}
       <button
         type="submit"
         disabled={loading || !content.trim()}
