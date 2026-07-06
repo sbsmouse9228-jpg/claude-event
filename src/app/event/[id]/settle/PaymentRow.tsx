@@ -29,12 +29,12 @@ export default function PaymentRow({ payment, eventId, canToggle }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-between py-2.5 border-b border-gray-100 last:border-0">
-      <div className="flex items-center gap-2.5">
+    <div className="relative flex items-center justify-between py-2.5 border-b border-gray-100 last:border-0">
+      <div className="flex items-center gap-2.5 min-w-0">
         <div className={`w-2 h-2 rounded-full shrink-0 ${payment.paid_at ? 'bg-green-400' : 'bg-gray-300'}`} />
-        <span className="text-sm text-gray-700">{payment.user?.nickname ?? '참여자'}</span>
+        <span className="text-sm text-gray-700 truncate">{payment.user?.nickname ?? '참여자'}</span>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 shrink-0 ml-2">
         <span className="text-sm font-medium text-gray-800">
           {payment.amount_due.toLocaleString()}원
         </span>
@@ -42,7 +42,7 @@ export default function PaymentRow({ payment, eventId, canToggle }: Props) {
           <button
             onClick={handleToggle}
             disabled={isPending}
-            className={`text-xs px-2.5 py-1 rounded-lg font-medium disabled:opacity-50 transition-colors ${
+            className={`text-xs px-3 py-1.5 rounded-lg font-medium disabled:opacity-50 transition-colors min-h-[36px] ${
               payment.paid_at
                 ? 'bg-green-100 text-green-700 hover:bg-green-200'
                 : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
@@ -51,7 +51,7 @@ export default function PaymentRow({ payment, eventId, canToggle }: Props) {
             {payment.paid_at ? '납부 완료' : '미납'}
           </button>
         ) : (
-          <span className={`text-xs px-2.5 py-1 rounded-lg font-medium ${
+          <span className={`text-xs px-3 py-1.5 rounded-lg font-medium ${
             payment.paid_at
               ? 'bg-green-100 text-green-700'
               : 'bg-gray-100 text-gray-400'
@@ -60,7 +60,7 @@ export default function PaymentRow({ payment, eventId, canToggle }: Props) {
           </span>
         )}
       </div>
-      {error && <p className="text-xs text-red-500 absolute">{error}</p>}
+      {error && <p className="text-xs text-red-500 mt-1 col-span-2">{error}</p>}
     </div>
   )
 }

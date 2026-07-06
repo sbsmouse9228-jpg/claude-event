@@ -36,6 +36,30 @@ export async function requestRide(carId: string, eventId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '로그인이 필요해요.' }
 
+  // 이미 이 이벤트의 다른 차량에 신청했는지 확인
+  const { data: existingRequest } = await supabase
+    .from('carpool_requests')
+    .select('id, carpool_cars!inner(event_id)')
+    .eq('passenger_id', user.id)
+    .eq('carpool_cars.event_id', eventId)
+    .not('status', 'eq', 'rejected')
+    .maybeSingle()
+
+  if (existingRequest) return { error: '이미 다른 차량에 탑승 신청했어요.' }
+
+  // 운전자 본인이 신청하는지 확인
+  const { data: car } = await supabase
+    .from('carpool_cars')
+    .select('driver_id, available_seats, carpool_requests(status)')
+    .eq('id', carId)
+    .single()
+
+  if (!car) return { error: '차량 정보를 찾을 수 없어요.' }
+  if (car.driver_id === user.id) return { error: '본인 차량에는 탑승 신청할 수 없어요.' }
+
+  const acceptedCount = (car.carpool_requests as { status: string }[]).filter(r => r.status === 'accepted').length
+  if (acceptedCount >= car.available_seats) return { error: '해당 차량의 잔여석이 없어요.' }
+
   const { error } = await supabase.from('carpool_requests').insert({
     car_id: carId,
     passenger_id: user.id,
@@ -72,6 +96,16 @@ export async function respondToRequest(
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '로그인이 필요해요.' }
+
+  // 요청한 차량의 드라이버인지 확인
+  const { data: request } = await supabase
+    .from('carpool_requests')
+    .select('carpool_cars!inner(driver_id)')
+    .eq('id', requestId)
+    .single()
+
+  const driverId = (request?.carpool_cars as unknown as { driver_id: string } | null)?.driver_id
+  if (!driverId || driverId !== user.id) return { error: '권한이 없어요.' }
 
   const { error } = await supabase
     .from('carpool_requests')

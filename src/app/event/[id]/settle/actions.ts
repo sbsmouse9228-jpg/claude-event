@@ -71,10 +71,31 @@ export async function createSettlement(eventId: string, formData: FormData) {
   return { success: true }
 }
 
+async function isEventHost(supabase: Awaited<ReturnType<typeof createClient>>, eventId: string, userId: string) {
+  const { data } = await supabase
+    .from('events')
+    .select('host_id')
+    .eq('id', eventId)
+    .single()
+  return data?.host_id === userId
+}
+
 export async function markPaid(paymentId: string, eventId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '로그인이 필요해요.' }
+
+  // 본인 납부 건이거나 주최자인 경우만 허용
+  const { data: payment } = await supabase
+    .from('settlement_payments')
+    .select('user_id')
+    .eq('id', paymentId)
+    .single()
+
+  const host = await isEventHost(supabase, eventId, user.id)
+  if (!payment || (payment.user_id !== user.id && !host)) {
+    return { error: '권한이 없어요.' }
+  }
 
   const { error } = await supabase
     .from('settlement_payments')
@@ -93,6 +114,18 @@ export async function markUnpaid(paymentId: string, eventId: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '로그인이 필요해요.' }
 
+  // 본인 납부 건이거나 주최자인 경우만 허용
+  const { data: payment } = await supabase
+    .from('settlement_payments')
+    .select('user_id')
+    .eq('id', paymentId)
+    .single()
+
+  const host = await isEventHost(supabase, eventId, user.id)
+  if (!payment || (payment.user_id !== user.id && !host)) {
+    return { error: '권한이 없어요.' }
+  }
+
   const { error } = await supabase
     .from('settlement_payments')
     .update({ paid_at: null })
@@ -109,6 +142,9 @@ export async function deleteSettlement(settlementId: string, eventId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: '로그인이 필요해요.' }
+
+  const host = await isEventHost(supabase, eventId, user.id)
+  if (!host) return { error: '주최자만 정산 항목을 삭제할 수 있어요.' }
 
   const { error } = await supabase
     .from('settlements')

@@ -92,20 +92,20 @@ export default function CarpoolCarCard({ car, eventId, currentUserId }: Props) {
           <p className="text-xs font-medium text-gray-600 mb-2">탑승 신청 대기 ({pendingRequests.length}명)</p>
           <div className="flex flex-col gap-2">
             {pendingRequests.map(r => (
-              <div key={r.id} className="flex items-center justify-between">
-                <span className="text-sm text-gray-700">{r.user?.nickname ?? '신청자'}</span>
-                <div className="flex gap-1.5">
+              <div key={r.id} className="flex items-center justify-between gap-2">
+                <span className="text-sm text-gray-700 truncate">{r.user?.nickname ?? '신청자'}</span>
+                <div className="flex gap-2 shrink-0">
                   <button
                     onClick={() => act(() => respondToRequest(r.id, 'accepted', eventId))}
                     disabled={isPending || availableSeats <= 0}
-                    className="text-xs px-2.5 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 disabled:opacity-40 font-medium"
+                    className="text-xs px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 disabled:opacity-40 font-medium min-h-[36px]"
                   >
                     수락
                   </button>
                   <button
                     onClick={() => act(() => respondToRequest(r.id, 'rejected', eventId))}
                     disabled={isPending}
-                    className="text-xs px-2.5 py-1 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 disabled:opacity-40"
+                    className="text-xs px-3 py-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 disabled:opacity-40 min-h-[36px]"
                   >
                     거절
                   </button>
@@ -161,7 +161,7 @@ export default function CarpoolCarCard({ car, eventId, currentUserId }: Props) {
               }
             }}
             disabled={isPending}
-            className="text-xs text-gray-400 hover:text-red-400 disabled:opacity-50"
+            className="text-xs px-3 py-2 text-gray-400 hover:text-red-400 disabled:opacity-50 min-h-[36px]"
           >
             차량 삭제
           </button>
