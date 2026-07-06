@@ -94,7 +94,7 @@ export default async function ManagePage({ params }: Props) {
                   <p className="leading-relaxed whitespace-pre-wrap">{notice.content}</p>
                   <p className="text-xs text-gray-400 mt-1.5">
                     {new Date(notice.created_at).toLocaleDateString('ko-KR', {
-                      month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit',
+                      month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Seoul',
                     })}
                   </p>
                 </div>

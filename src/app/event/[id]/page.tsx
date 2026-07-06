@@ -75,9 +75,9 @@ export default async function EventPage({ params, searchParams }: Props) {
 
   const eventDate = new Date(event.event_date)
   const dateStr = eventDate.toLocaleDateString('ko-KR', {
-    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long',
+    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long', timeZone: 'Asia/Seoul',
   })
-  const timeStr = eventDate.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+  const timeStr = eventDate.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Seoul' })
 
   const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/invite/${event.invite_token}`
 
@@ -205,7 +205,7 @@ export default async function EventPage({ params, searchParams }: Props) {
                   <p className="leading-relaxed whitespace-pre-wrap">{notice.content}</p>
                   <p className="text-xs text-gray-400 mt-1.5">
                     {new Date(notice.created_at).toLocaleDateString('ko-KR', {
-                      month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit',
+                      month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Seoul',
                     })}
                   </p>
                 </div>

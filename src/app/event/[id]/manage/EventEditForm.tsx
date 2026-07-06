@@ -13,8 +13,11 @@ export default function EventEditForm({ event }: { event: Event }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
   const eventDate = new Date(event.event_date)
-  const dateStr = eventDate.toISOString().split('T')[0]
-  const timeStr = eventDate.toTimeString().slice(0, 5)
+  // 폼 기본값을 KST 기준으로 표시
+  const dateStr = eventDate.toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' }) // YYYY-MM-DD 형식
+  const timeStr = eventDate.toLocaleTimeString('ko-KR', {
+    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Seoul',
+  }).replace(':', ':')
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()

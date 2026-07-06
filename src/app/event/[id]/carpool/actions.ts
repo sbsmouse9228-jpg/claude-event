@@ -9,12 +9,15 @@ export async function registerCar(eventId: string, formData: FormData) {
   if (!user) return { error: '로그인이 필요해요.' }
 
   const departure_location = formData.get('departure_location') as string
-  const departure_time = formData.get('departure_time') as string
+  const departure_time_raw = formData.get('departure_time') as string
   const available_seats = parseInt(formData.get('available_seats') as string, 10)
 
-  if (!departure_location || !departure_time || isNaN(available_seats)) {
+  if (!departure_location || !departure_time_raw || isNaN(available_seats)) {
     return { error: '모든 항목을 입력해주세요.' }
   }
+
+  // datetime-local 값(timezone 없음)을 KST로 해석해 UTC ISO로 변환
+  const departure_time = new Date(departure_time_raw + ':00+09:00').toISOString()
 
   const { error } = await supabase.from('carpool_cars').insert({
     event_id: eventId,

@@ -125,10 +125,12 @@ function EventCard({ event, isHost }: { event: Event; isHost: boolean }) {
     month: 'long',
     day: 'numeric',
     weekday: 'short',
+    timeZone: 'Asia/Seoul',
   })
   const timeStr = eventDate.toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Asia/Seoul',
   })
 
   return (

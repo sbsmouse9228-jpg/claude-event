@@ -38,8 +38,8 @@ export default function CarpoolCarCard({ car, eventId, currentUserId }: Props) {
   const myRequest = car.carpool_requests.find(r => r.passenger_id === currentUserId)
 
   const departureDate = new Date(car.departure_time)
-  const dateStr = departureDate.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })
-  const timeStr = departureDate.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+  const dateStr = departureDate.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short', timeZone: 'Asia/Seoul' })
+  const timeStr = departureDate.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Seoul' })
 
   function act(fn: () => Promise<{ error?: string; success?: boolean } | undefined>) {
     setError(null)
