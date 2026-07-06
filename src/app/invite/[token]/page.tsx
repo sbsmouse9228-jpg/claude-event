@@ -38,10 +38,12 @@ export default async function InvitePage({ params }: Props) {
     month: 'long',
     day: 'numeric',
     weekday: 'long',
+    timeZone: 'Asia/Seoul',
   })
   const timeStr = eventDate.toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: 'Asia/Seoul',
   })
 
   return (
