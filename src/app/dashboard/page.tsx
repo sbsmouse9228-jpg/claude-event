@@ -65,25 +65,27 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
             내가 주최한 모임
           </h2>
-          {hostedEvents && hostedEvents.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              {hostedEvents.map((event) => (
-                <EventCard key={event.id} event={event} isHost />
-              ))}
-            </div>
-          ) : (
-            <EmptyState
-              message="아직 주최한 모임이 없어요"
-              action={
-                <Link
-                  href="/event/create"
-                  className="text-sm text-indigo-600 font-medium hover:underline"
-                >
-                  모임 만들기
-                </Link>
-              }
-            />
-          )}
+          <div style={{ maxWidth: '400px', margin: '0 auto', width: '100%' }}>
+            {hostedEvents && hostedEvents.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {hostedEvents.map((event) => (
+                  <EventCard key={event.id} event={event} isHost />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                message="아직 주최한 모임이 없어요"
+                action={
+                  <Link
+                    href="/event/create"
+                    className="text-sm text-indigo-600 font-medium hover:underline"
+                  >
+                    모임 만들기
+                  </Link>
+                }
+              />
+            )}
+          </div>
         </section>
 
         {/* 참여한 모임 */}
@@ -91,15 +93,17 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">
             참여 중인 모임
           </h2>
-          {participatingEvents && participatingEvents.length > 0 ? (
-            <div className="flex flex-col gap-3">
-              {participatingEvents.map((event) => (
-                <EventCard key={event.id} event={event} isHost={false} />
-              ))}
-            </div>
-          ) : (
-            <EmptyState message="참여 중인 모임이 없어요" />
-          )}
+          <div style={{ maxWidth: '400px', margin: '0 auto', width: '100%' }}>
+            {participatingEvents && participatingEvents.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {participatingEvents.map((event) => (
+                  <EventCard key={event.id} event={event} isHost={false} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState message="참여 중인 모임이 없어요" />
+            )}
+          </div>
         </section>
       </main>
     </div>
