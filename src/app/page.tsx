@@ -17,16 +17,16 @@ export default async function LandingPage() {
       <div className="w-full max-w-sm flex flex-col items-center gap-8 text-center">
         {/* 로고 */}
         <div className="flex flex-col items-center gap-2">
-          <span className="text-5xl font-bold tracking-tight text-indigo-600">MOA</span>
-          <span className="text-gray-500 text-sm">모아</span>
+          <span className="text-5xl font-bold tracking-tight text-primary">MOA</span>
+          <span className="text-muted-foreground text-sm">모아</span>
         </div>
 
         {/* 소개 */}
         <div className="flex flex-col gap-3">
-          <h1 className="text-2xl font-bold text-gray-900 leading-snug">
+          <h1 className="text-2xl font-bold text-foreground leading-snug">
             모임 관리,<br />링크 하나로 끝
           </h1>
-          <p className="text-gray-500 text-sm leading-relaxed">
+          <p className="text-muted-foreground text-sm leading-relaxed">
             공지 · 출석 확인 · 카풀 · 정산을<br />초대 링크 하나로 처리하세요
           </p>
         </div>
@@ -41,10 +41,10 @@ export default async function LandingPage() {
           ].map(({ icon, label }) => (
             <div
               key={label}
-              className="flex flex-col items-center gap-1.5 py-4 bg-white rounded-xl shadow-sm border border-gray-100"
+              className="flex flex-col items-center gap-1.5 py-4 bg-card rounded-xl shadow-sm border border-border"
             >
               <span className="text-2xl">{icon}</span>
-              <span className="text-sm font-medium text-gray-700">{label}</span>
+              <span className="text-sm font-medium text-card-foreground">{label}</span>
             </div>
           ))}
         </div>
@@ -54,7 +54,7 @@ export default async function LandingPage() {
           <KakaoLoginButton />
         </Suspense>
 
-        <p className="text-xs text-gray-400">
+        <p className="text-xs text-muted-foreground">
           로그인 시 서비스 이용약관에 동의하는 것으로 간주합니다
         </p>
       </div>

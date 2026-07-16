@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOA 프로젝트 현황</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    /* 헤더 */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .header .badge {
+      display: inline-block;
+      background: #6366f1;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+    .header h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #818cf8, #e879f9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .header p {
+      color: #94a3b8;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    /* 버전 카드 */
+    .versions {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #6366f1; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .card-version {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #818cf8;
+      background: rgba(99, 102, 241, 0.12);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+    }
+    .status-done {
+      font-size: 0.75rem;
+      color: #4ade80;
+      background: rgba(74, 222, 128, 0.1);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .status-next {
+      font-size: 0.75rem;
+      color: #fbbf24;
+      background: rgba(251, 191, 36, 0.1);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #f1f5f9;
+    }
+    .card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .card ul li {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      padding: 0.15rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+    .card ul li::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      color: #6366f1;
+    }
+
+    /* DB / 라우트 섹션 */
+    .section { margin-bottom: 2rem; }
+    .section h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section h2::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #334155;
+    }
+
+    /* 라우트 테이블 */
+    .route-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    .route-table th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      color: #64748b;
+      font-weight: 600;
+      border-bottom: 1px solid #334155;
+    }
+    .route-table td {
+      padding: 0.6rem 0.75rem;
+      border-bottom: 1px solid #1e293b;
+      color: #94a3b8;
+    }
+    .route-table td:first-child {
+      font-family: "Fira Code", "Courier New", monospace;
+      color: #7dd3fc;
+    }
+    .route-table tr:hover td { background: #1e293b; }
+
+    /* DB 테이블 칩 */
+    .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .chip {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.8rem;
+      font-family: "Fira Code", "Courier New", monospace;
+      color: #7dd3fc;
+    }
+
+    /* 다음 할 일 */
+    .todo-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.6rem;
+    }
+    .todo-item {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-left: 3px solid #fbbf24;
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      font-size: 0.85rem;
+      color: #cbd5e1;
+    }
+
+    /* 푸터 */
+    .footer {
+      text-align: center;
+      color: #475569;
+      font-size: 0.8rem;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #1e293b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- 헤더 -->
+    <div class="header">
+      <div class="badge">MOA — 이벤트 관리 플랫폼</div>
+      <h1>프로젝트 현황</h1>
+      <p>소규모 모임 주최자를 위한 공지·출석·카풀·정산 통합 서비스</p>
+    </div>
+
+    <!-- 버전 카드 -->
+    <div class="section">
+      <h2>버전별 진행 현황</h2>
+      <div class="versions">
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-version">v0.1</span>
+            <span class="status-done">✓ 완료</span>
+          </div>
+          <h3>기반 세팅</h3>
+          <ul>
+            <li>카카오 OAuth 인증</li>
+            <li>이벤트 생성 / 조회</li>
+            <li>초대 링크 (invite token)</li>
+            <li>Supabase RLS 기초 정책</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-version">v0.2</span>
+            <span class="status-done">✓ 완료</span>
+          </div>
+          <h3>공지 & 출석</h3>
+          <ul>
+            <li>공지 발송</li>
+            <li>출석 확인 (실시간)</li>
+            <li>주최자 관리 패널</li>
+            <li>대시보드 탭 (주최/참여)</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-version">v0.3</span>
+            <span class="status-done">✓ 완료</span>
+          </div>
+          <h3>카풀 매칭</h3>
+          <ul>
+            <li>차량 등록 / 수정</li>
+            <li>탑승 신청 (pending)</li>
+            <li>수락 / 거절 흐름</li>
+            <li>연락처·출발지 알림</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-version">v0.4</span>
+            <span class="status-done">✓ 완료</span>
+          </div>
+          <h3>정산 시스템</h3>
+          <ul>
+            <li>더치페이 계산 (원 반올림)</li>
+            <li>납부 확인 / 미납 알림</li>
+            <li>D-1 자동 리마인드 Cron</li>
+            <li>Edge Function (send-reminders)</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-version">v1.0</span>
+            <span class="status-next">→ 다음</span>
+          </div>
+          <h3>배포 준비</h3>
+          <ul>
+            <li>E2E 테스트</li>
+            <li>모바일 반응형 점검</li>
+            <li>RLS 보안 최종 검토</li>
+            <li>Vercel 프로덕션 배포</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 라우트 구조 -->
+    <div class="section">
+      <h2>라우팅 구조</h2>
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <table class="route-table">
+          <thead>
+            <tr>
+              <th>경로</th>
+              <th>설명</th>
+              <th>접근</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>/</td><td>랜딩 (카카오 로그인)</td><td>공개</td></tr>
+            <tr><td>/dashboard</td><td>내 모임 목록 (주최/참여 탭)</td><td>로그인</td></tr>
+            <tr><td>/event/create</td><td>이벤트 생성 폼</td><td>로그인</td></tr>
+            <tr><td>/event/[id]</td><td>이벤트 메인 (참여자 뷰)</td><td>공개</td></tr>
+            <tr><td>/event/[id]/manage</td><td>주최자 관리 패널</td><td>주최자</td></tr>
+            <tr><td>/event/[id]/carpool</td><td>카풀 등록 / 탑승 신청</td><td>로그인</td></tr>
+            <tr><td>/event/[id]/settle</td><td>정산 비용 입력 / 납부 확인</td><td>로그인</td></tr>
+            <tr><td>/invite/[token]</td><td>초대 링크 진입점</td><td>공개</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DB 테이블 -->
+    <div class="section">
+      <h2>DB 테이블 (마이그레이션 001~006 완료)</h2>
+      <div class="chips">
+        <span class="chip">users</span>
+        <span class="chip">events</span>
+        <span class="chip">event_participants</span>
+        <span class="chip">notices</span>
+        <span class="chip">carpool_cars</span>
+        <span class="chip">carpool_requests</span>
+        <span class="chip">settlements</span>
+        <span class="chip">settlement_payments</span>
+        <span class="chip">push_subscriptions</span>
+      </div>
+    </div>
+
+    <!-- v1.0 Todo -->
+    <div class="section">
+      <h2>v1.0 배포 체크리스트</h2>
+      <div class="todo-list">
+        <div class="todo-item">E2E 테스트 (주최자/참여자 플로우)</div>
+        <div class="todo-item">모바일 반응형 점검 (375/390/414px)</div>
+        <div class="todo-item">RLS 보안 정책 최종 검토</div>
+        <div class="todo-item">로딩 스켈레톤 / 빈 상태 UI</div>
+        <div class="todo-item">Vercel 환경변수 설정</div>
+        <div class="todo-item">프로덕션 배포</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      MOA · Next.js 14 + Supabase + Tailwind CSS · 2026
+    </div>
+
+  </div>
+</body>
+</html>
